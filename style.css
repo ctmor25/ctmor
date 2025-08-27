@@ -1,0 +1,438 @@
+/* Estilos generales (aplican por defecto a todas las pantallas) */
+body {
+  font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif; /* Tahoma es la fuente principal ahora */
+  margin: 15px; /* Margen general */
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 16px; /* Tamaño de fuente base para legibilidad */
+}
+
+.container {
+  width: 95%; /* Usar porcentaje para el ancho en lugar de píxeles fijos */
+  max-width: 800px;
+  margin: 0 auto; /* Centra el div container horizontalmente en la página */
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05); /* Sombra + un borde sutil */
+  border: 1px solid #e0e0e0; /* Un borde explícito para el contenedor */
+  box-sizing: border-box;
+  text-align: center; /* Centra el texto y los elementos inline-block dentro del container */
+}
+
+/* Si usas un logo, descomenta y ajusta este estilo */
+/* .academy-logo {
+  display: block;
+  margin: 0 auto 25px auto;
+  max-width: 150px;
+  height: auto;
+} */
+
+h2 {
+  color: #0056b3;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+}
+
+/* --- ESTILOS PARA LA TABLA DE ENCABEZADO (ESPECÍFICOS) --- */
+.header-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px; /* Espacio entre la tabla de encabezado y la tabla de resultados */
+  font-size: 1.2em; /* Tamaño de fuente para el encabezado */
+}
+
+.header-table td {
+  padding: 5px 0; /* Padding vertical, sin padding horizontal por ahora */
+  border: none; /* Sin bordes para un look más limpio */
+}
+
+.header-table td.left-aligned-combined {
+  text-align: left; /* Alineación a la izquierda */
+  font-weight: bold; /* Negrita para estos títulos */
+  color: #0056b3; /* Color principal */
+  padding-left: 10px; /* Un poco de padding a la izquierda */
+  font-size: 1.3em; /* Un poco más grande que las otras celdas del encabezado */
+}
+
+.header-table td.header-label {
+  text-align: left; /* Alineación a la izquierda */
+  font-weight: bold;
+  color: #333;
+  width: 15%; /* Reducido para la primera columna de la tabla de encabezado */
+  padding-left: 10px;
+}
+
+.header-table td.header-value {
+  text-align: left; /* Alineación a la izquierda */
+  color: #007bff; /* Color para los valores dinámicos/importantes */
+  padding-right: 10px;
+  font-weight: normal;
+}
+
+.header-table td.group-value {
+  font-size: 1.5em !important; /* Ajustado para que sea tamaño de título 2 */
+  font-weight: bold !important; /* Negrita forzada */
+  color: #333; /* Un color oscuro para que resalte más */
+}
+
+.header-table td.info-cell-red {
+  background-color: #ffcccc !important; /* Un rojo claro, forzado con !important */
+  color: #cc0000 !important; /* Texto en rojo más oscuro para contraste, forzado con !important */
+  font-weight: bold; /* Opcional: hacer el texto en negrita */
+  padding: 5px 10px; /* Ajustar el padding si es necesario */
+}
+
+
+.header-table td.info-cell-yellow {
+  background-color: #FFFACD !important; /* Un amarillo muy claro (Lemon Chiffon), forzado con !important */
+  color: #8B8000 !important; /* Un amarillo verdoso oscuro o marrón ocre para el texto, forzado con !important */
+  padding: 5px 10px; /* Mantenemos el padding */
+}
+
+
+/* Estilos de tabla de resultados por defecto (para pantallas grandes) */
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border: 1px solid #ccc; /* Un borde principal para toda la tabla */
+  border-radius: 8px; /* Bordes redondeados para el marco general */
+  overflow: hidden; /* Esto es importante para que el border-radius funcione bien con los bordes de las celdas */
+}
+
+.responsive-table th,
+.responsive-table td {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap; /* Mantener para desktop */
+}
+
+.responsive-table th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+/* Aplicar estos estilos generales y luego serán anulados por las clases específicas o media queries */
+.responsive-table tr:nth-child(even) {
+  background-color: #f2f2f2; /* Gris claro para filas pares en desktop */
+}
+
+.responsive-table tr:hover {
+  background-color: #e9e9e9; /* Gris más oscuro al pasar el mouse en desktop */
+}
+
+/* --- ESTILOS PARA FILAS DE ESTADO (APROBADO/PENDIENTE) --- */
+
+/* Estilo para filas con estado "APROBADO" (Máxima especificidad y color para prueba) */
+div.container .responsive-table tbody tr.fila-aprobado {
+  background-color: #A7FF83 !important; /* VERDE LIMA BRILLANTE para prueba */
+  color: #1a751a !important;
+  font-weight: bold !important;
+  /* Aseguramos que los bordes también se vean correctamente con la clase */
+  border: 1px solid #8BC34A !important;
+}
+
+/* Estilo para filas con estado "PENDIENTE" (Máxima especificidad y !important) */
+div.container .responsive-table tbody tr.fila-pendiente {
+  background-color: #fffacd !important; /* Amarillo claro (lemon chiffon) */
+  color: #8B8000 !important;
+  font-weight: bold !important;
+}
+
+/* Estilos para mensajes de error e información */
+.error-message, .info-message {
+  padding: 12px;
+  margin-top: 15px;
+  font-size: 1em;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: #d9534f;
+  border: 1px solid #d9534f;
+  background-color: #fcf2f2;
+}
+
+.info-message {
+  color: #337ab7;
+  border: 1px solid #337ab7;
+  background-color: #f0f8ff;
+}
+
+/* Estilos para formularios e inputs */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+input[type="text"] {
+  width: 50%;
+  max-width: 250px;
+  padding: 16px;
+  margin-bottom: 10px;
+  font-size: 2.4em; /* Texto doble de tamaño */
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-weight: bold; /* Texto en negrilla */
+}
+
+input[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  padding: 16px 15px; /* Mismo padding vertical que el textbox */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 2.4em; /* Duplicamos el tamaño del texto del botón */
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  width: auto;
+  max-width: none;
+}
+
+input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para botones de enlace/JavaScript */
+.link-button, .js-button {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.link-button:hover, .js-button:hover {
+  background-color: #5a6268;
+}
+
+p {
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* --- ESTILOS PARA EL BANNER --- */
+.banner-container {
+  width: 100%;
+  min-height: 200px !important; /* AÑADIDO !important */
+  height: 200px !important; /* AÑADIDO height y !important */
+  background-size: cover; /* La imagen cubrirá todo el espacio, cortando si es necesario */
+  background-position: center center; /* Centra la imagen de fondo */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  display: flex; /* Para centrar el contenido vertical y horizontalmente */
+  align-items: center; /* Centra verticalmente el contenido */
+  justify-content: center; /* Centra horizontalmente el contenido */
+  color: white; /* Color del texto sobre el banner */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Sombra para que el texto resalte sobre la imagen */
+  border-radius: 8px; /* Opcional: mismos bordes redondeados que el contenedor principal */
+  overflow: hidden; /* Asegura que la imagen no se salga si el radius es aplicado */
+  margin-bottom: 20px; /* Espacio debajo del banner */
+}
+
+.banner-content {
+  text-align: center;
+  padding: 10px;
+}
+
+.banner-title {
+  font-size: 2.5em; /* Tamaño del título del banner */
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.banner-subtitle {
+  font-size: 1.2em; /* Tamaño del subtítulo del banner */
+}
+
+
+/* --- MEDIA QUERIES para la modalidad de tarjetas --- */
+
+@media screen and (max-width: 768px) {
+  .responsive-table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .responsive-table tr {
+    border: 1px solid #ddd;
+    display: block; /* Cada fila se comporta como un bloque */
+    margin-bottom: 0.625em; /* Espacio entre tarjetas/filas */
+    border-radius: 8px; /* Bordes redondeados para la tarjeta */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave para la tarjeta */
+  }
+
+  /* ESTILOS ESPECÍFICOS PARA MÓVIL (TARJETAS) */
+  /* Aplicamos el background-color y otros estilos aquí también, con !important */
+  .responsive-table tr.fila-aprobado {
+    background-color: #A7FF83 !important; /* VERDE LIMA BRILLANTE para prueba en móvil */
+    color: #1a751a !important;
+    font-weight: bold !important;
+  }
+
+  .responsive-table tr.fila-pendiente {
+    background-color: #fffacd !important; /* Amarillo claro (lemon chiffon) en móvil */
+    color: #8B8000 !important;
+    font-weight: bold !important;
+  }
+
+  /* **Ajuste para filas impares en modo tarjeta (display: block)** */
+  .responsive-table tr:nth-child(even) {
+    background-color: #f9f9f9 !important; /* Un gris muy suave para pares en modo tarjeta */
+  }
+
+  /* **Ajuste para el hover en modo tarjeta (display: block)** */
+  .responsive-table tr:hover {
+    background-color: #e0e0e0 !important; /* Un gris más oscuro para el hover en modo tarjeta */
+  }
+
+  .responsive-table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+  }
+
+  .responsive-table td::before {
+    left: 0.5em;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    content: attr(data-label);
+    display: inline-block;
+    margin-right: 0.5em;
+  }
+
+  .responsive-table td:last-child {
+    border-bottom: 0;
+  }
+
+  /* Ajustes para la tabla de encabezado en móviles */
+  .header-table {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+  .header-table td.left-aligned-combined {
+    font-size: 1.1em;
+    padding-left: 5px;
+  }
+  .header-table td.header-label {
+    width: 30%;
+    font-size: 0.95em;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .header-table td.header-value {
+    font-size: 0.95em;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .header-table td.header-label,
+  .header-table td.header-value {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 2px 5px;
+  }
+  .header-table td.header-value {
+    margin-bottom: 5px;
+  }
+
+  .header-table td.group-value {
+    font-size: 1.6em !important;
+    font-weight: bold !important;
+  }
+
+  .header-table td.info-cell-red {
+    background-color: #ffcccc !important;
+    color: #cc0000 !important;
+  }
+
+  /* Ajustes para inputs en pantallas más pequeñas (móviles) */
+  input[type="text"], input[type="submit"], .link-button, .js-button {
+    font-size: 1em; /* Ajusta este valor si necesitas que sea diferente en móvil */
+    padding: 12px 15px; /* Ajusta el padding para móviles si es necesario para la altura */
+    width: 90%; /* O un porcentaje que funcione bien para el ancho en móvil */
+    max-width: none;
+  }
+
+  /* Ajustes responsivos para el banner en móviles */
+  .banner-container {
+    min-height: 150px !important; /* Un poco más pequeño en móviles, con !important */
+    height: 150px !important; /* Y aquí con !important */
+  }
+  .banner-title {
+    font-size: 1.8em;
+  }
+  .banner-subtitle {
+    font-size: 1em;
+  }
+}
+
+/* Ajustes adicionales para pantallas muy pequeñas si la modalidad de tarjetas lo necesita */
+@media (max-width: 400px) {
+  body {
+    margin: 5px;
+  }
+  .container {
+    padding: 10px;
+  }
+  h2 {
+    font-size: 1.3em;
+  }
+  input[type="submit"], .link-button, .js-button {
+    font-size: 0.85em; /* Valor base para botones en pantallas pequeñas */
+    padding: 7px 10px;
+  }
+
+  input[type="text"] {
+    font-size: 2em; /* Mantiene el doble de tamaño */
+    font-weight: bold; /* Mantiene la negrilla */
+    padding: 7px 10px; /* Ajustamos el padding para móviles muy pequeños si es necesario */
+  }
+
+  /* Mantenemos el mismo tamaño y padding del botón Submit para móviles muy pequeños */
+  input[type="submit"] {
+    padding: 7px 10px; /* Igual al padding del textbox en este media query */
+    font-size: 2em; /* Duplicamos el tamaño del texto del botón también para estas pantallas */
+  }
+
+
+  .responsive-table td {
+    padding-left: 45%;
+    font-size: 0.9em;
+  }
+  .responsive-table td::before {
+    width: 40%;
+  }
+  .header-table td.left-aligned-combined {
+    font-size: 1em;
+  }
+}

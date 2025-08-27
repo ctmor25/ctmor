@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Resultados - Listado de Aprobados</title>
+</head>
+<body>
+  <div class="container">
+    <div class="banner-container" style="background-image: url('https://i.imgur.com/EPlOPin.jpeg');">
+      <div class="banner-content">
+        <div class="banner-title">HISTORIA E IDENTIDAD NACIONAL</div>
+        <div class="banner-subtitle">Resultados de Consulta</div>
+      </div>
+    </div>
+
+    <div id="tablaResultados"></div>
+
+    <p><button onclick="window.history.back()" class="js-button">← Volver</button></p>
+  </div>
+
+  <script>
+    // Leer query string
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const codigo = getQueryParam('codigo');
+
+    fetch('data.json')
+      .then(response => response.json())
+      .then(data => {
+        const filtrados = data.filter(item => item.CODIGO === codigo);
+        const contenedor = document.getElementById('tablaResultados');
+
+        if(filtrados.length === 0) {
+          contenedor.innerHTML = `<div class="error-message">No se encontró ningún registro para el código ${codigo}</div>`;
+          return;
+        }
+
+        // Crear tabla
+        let html = '<table class="responsive-table"><thead><tr>';
+        html += '<th>GRUPO</th><th>CARRERA</th><th>ESTUDIANTES</th><th>MODULO</th><th>ESTADO</th><th>CUESTIONARIOS PEND.</th>';
+        html += '</tr></thead><tbody>';
+
+        filtrados.forEach(fila => {
+          const claseFila = fila.ESTADO.includes('APROBADO') ? 'fila-aprobado' : 'fila-pendiente';
+          html += `<tr class="${claseFila}">`;
+          html += `<td data-label="GRUPO">${fila.GRUPO}</td>`;
+          html += `<td data-label="CARRERA">${fila.CARRERA}</td>`;
+          html += `<td data-label="ESTUDIANTES">${fila.ESTUDIANTES}</td>`;
+          html += `<td data-label="MODULO">${fila.MODULO}</td>`;
+          html += `<td data-label="ESTADO">${fila.ESTADO}</td>`;
+          html += `<td data-label="CUESTIONARIOS">${fila.CUESTIONARIOS}</td>`;
+          html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        contenedor.innerHTML = html;
+      })
+      .catch(error => {
+        document.getElementById('tablaResultados').innerHTML = `<div class="error-message">Error al cargar los datos</div>`;
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
