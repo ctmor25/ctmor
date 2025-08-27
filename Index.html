@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    <?!= include('Style'); ?>  /* Mantener todos los estilos que ya tenías */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="banner-container" style="background-image: url('https://i.imgur.com/EPlOPin.jpeg');">
+      <div class="banner-content">
+        <div class="banner-title">HISTORIA E IDENTIDAD NACIONAL</div>
+        <div class="banner-subtitle">Consulta de Lista de Aprobados</div>
+      </div>
+    </div>
+    
+    <h2>CTMOR Módulos Transversales<BR/><BR/>Consulta de ✅ Listado de Aprobados<BR/>Módulo: HISTORIA E IDENTIDAD NACIONAL</h2>
+    --------------------------------------------------------------------------------<BR/>
+    
+    <form id="form-codigo">
+      <label for="codigo">INGRESE EL CODIGO DE ACCESO:</label>
+      <input name="codigo" type="text" id="codigo" required autofocus placeholder="Ej. 676629" />
+      <input type="submit" value="Ver lista" />
+    </form>
+    --------------------------------------------------------------------------------<BR/>
+    
+    <div id="tabla-encabezado" style="display:none;">
+      <table class="header-table">
+        <tr><td colspan="2" class="left-aligned-combined">CTMOR - Módulos Transversales SAB & DOM</td></tr>
+        <tr><td class="header-label">Código:</td><td class="header-value" id="enc-codigo"></td></tr>
+      </table>
+    </div>
+
+    <div id="resultado"></div>
+
+    <BR/><BR/>Más Información<BR/>Prof. Leonardo Dávila<BR/> Whatsapp: 84489492
+    <BR/><BR/>
+    <BR/><i>"Encomienda al Señor tus planes y tus pensamientos serán afirmados"</i>
+    <BR/><i>Proverbios 16:3</i>
+  </div>
+
+  <script>
+    // --- CONFIGURA AQUÍ tu CSV público de Google Sheets ---
+    const sheetCSV = 'https://docs.google.com/spreadsheets/d/<TU_SHEET_ID>/export?format=csv&gid=0';
+
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    async function mostrarCodigo(event) {
+      if(event) event.preventDefault(); // previene el submit del formulario
+      const codigoParam = getQueryParam("codigo") || document.getElementById("codigo").value.trim();
+      if (!codigoParam) {
+        document.getElementById("resultado").innerHTML = "<p class='info-message'>No se indicó ningún código.</p>";
+        return;
+      }
+
+      // Cargar CSV
+      const resp = await fetch(sheetCSV);
+      const text = await resp.text();
+      const rows = text.split("\n").map(r => r.split(","));
+
+      const headers = rows[0];
+      const codigoIdx = headers.indexOf("CODIGO");
+      const estudianteIdx = headers.indexOf("ESTUDIANTES");
+      const estadoIdx = headers.indexOf("ESTADO");
+
+      const resultados = rows.slice(1).filter(r => r[codigoIdx] === codigoParam);
+
+      const div = document.getElementById("resultado");
+      const tablaEncabezado = document.getElementById("tabla-encabezado");
+
+      if (resultados.length === 0) {
+        div.innerHTML = "<p class='info-message'>No se encontraron alumnos para este código.</p>";
+        tablaEncabezado.style.display = "none";
+        return;
+      }
+
+      document.getElementById("enc-codigo").textContent = resultados[0][codigoIdx];
+      tablaEncabezado.style.display = "table";
+
+      // Tabla de resultados
+      let html = `<table class="responsive-table">
+        <thead><tr><th>Estudiante</th><th>Estado</th></tr></thead><tbody>`;
+
+      resultados.forEach(r => {
+        let clase = r[estadoIdx].includes("APROBADO") ? "fila-aprobado" : "fila-pendiente";
+        let estadoEmoji = r[estadoIdx].includes("APROBADO") ? "✅" : "🔺";
+        html += `<tr class="${clase}">
+          <td data-label="Estudiante">${r[estudianteIdx]}</td>
+          <td data-label="Estado">${estadoEmoji} ${r[estadoIdx]}</td>
+        </tr>`;
+      });
+
+      html += "</tbody></table>";
+      div.innerHTML = html;
+    }
+
+    // Ejecutar al cargar la página si viene el parámetro en URL
+    window.onload = mostrarCodigo;
+
+    // Asociar formulario
+    document.getElementById("form-codigo").addEventListener("submit", mostrarCodigo);
+  </script>
+</body>
+</html>
