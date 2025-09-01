@@ -1,96 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <title>Resultados - Listado de Aprobados</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Resultados - Listado de Aprobados</title>
 </head>
 <body>
-  <div class="container">
-    <div class="banner-container" style="background-image: url('https://i.imgur.com/EPlOPin.jpeg');">
-      <div class="banner-content">
-        <div class="banner-title">HISTORIA E IDENTIDAD NACIONAL</div>
-        <div class="banner-subtitle">Resultados de Consulta</div>
-      </div>
-    </div>
+  <div class="container">
+    <div class="banner-container" style="background-image: url('https://i.imgur.com/EPlOPin.jpeg');">
+      <div class="banner-content">
+        <div class="banner-title">HISTORIA E IDENTIDAD NACIONAL</div>
+        <div class="banner-subtitle">Resultados de Consulta</div>
+      </div>
+    </div>
 
-    <div id="tablaResultados"></div>
+    <div id="tablaResultados"></div>
 
-    <p><button onclick="window.history.back()" class="js-button">← Volver</button></p>
-  </div>
+    <p><button onclick="window.history.back()" class="js-button">← Volver</button></p>
+  </div>
 
-  <script>
-    // Leer query string
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
+  <script>
+    // Función para obtener parámetros del query string (?codigo=xxxx)
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
-    const codigo = getQueryParam('codigo');
+    const codigo = getQueryParam('codigo');
 
-    fetch('data.json')
-      .then(response => response.json())
-      .then(data => {
-        const filtrados = data.filter(item => item.CODIGO === codigo);
-        const contenedor = document.getElementById('tablaResultados');
+    async function cargarDatos() {
+      try {
+        // URL de Google Sheets publicado en formato JSON
+        const url = "https://docs.google.com/spreadsheets/d/1yvPVv78rL2z5QvyAPpzY57DMibX26_ZaMtrpCBKR71M/gviz/tq?tqx=out:json&sheet=Notas";
+        
+        const response = await fetch(url);
+        const text = await response.text();
 
-        if(filtrados.length === 0) {
-          contenedor.innerHTML = `<div class="error-message">No se encontró ningún registro para el código ${codigo}</div>`;
-          return;
-        }
+        // Elimina la envoltura "google.visualization.Query.setResponse(...)"
+        const json = JSON.parse(text.substr(47).slice(0, -2));
 
-        // Variables de ejemplo para la tabla de información
-        // Reemplaza estas variables con los datos que necesites de tu base de datos o API
-        const resultados = [['G45', 'INGENIERÍA EN SISTEMAS']]; // Ejemplo para GRUPO y CARRERA
-        const infoCelda = "2025-09-01";
-        const infoCelda2 = "2025-08-27 15:30:00";
-        const infoCelda3 = "contacto@ejemplo.com";
-        const infoCelda4 = "¡Próxima actualización en 24h!";
-        const infoCelda5 = "Este es un mensaje de prueba para los estudiantes.";
+        // Encabezados
+        const headers = json.table.cols.map(col => col.label);
 
-        // Inserta la tabla de información antes de la tabla de resultados
-        let infoTableHtml = `<table class="header-table">
-          <tr><td colspan="2" class="left-aligned-combined">CTMOR - Módulos Transversales SAB & DOM</td></tr>
-          <tr><td colspan="2" class="left-aligned-combined">✅ Listado de Aprobados de Nuevo Ingreso</td></tr>
-          <tr><td class="header-label">Módulo:</td><td class="header-value group-value">HISTORIA E IDENTIDAD NACIONAL</td></tr>
-          <tr><td class="header-label">Grupo:</td><td class="header-value group-value">${resultados[0][0]}</td></tr>
-          <tr><td class="header-label">Carrera:</td><td class="header-value">${resultados[0][1]}</td></tr>
-          <tr><td class="header-label">Expira:</td><td class="header-value info-cell-red">${infoCelda}</td></tr>
-          <tr><td class="header-label">Actualización:</td><td class="header-value">${infoCelda2}</td></tr>
-          <tr><td class="header-label">Contacto:</td><td class="header-value">${infoCelda3}</td></tr>
-          <tr><td class="header-label">Anuncio:</td><td class="header-value info-cell-yellow">${infoCelda4}</td></tr>
-          <tr><td colspan="2" class="left-aligned-combined">----------------------------------------------</td></tr>
-          <tr><td colspan="2" class="header-value"><i>${infoCelda5}</i></td></tr>
-        </table>`;
+        // Convertir filas en objetos
+        const data = json.table.rows.map(r => {
+          let obj = {};
+          r.c.forEach((c, i) => obj[headers[i]] = c ? c.v : "");
+          return obj;
+        });
 
-        // Crear tabla de resultados
-        let resultsTableHtml = '<table class="responsive-table"><thead><tr>';
-        resultsTableHtml += '<th>GRUPO</th><th>CARRERA</th><th>ESTUDIANTES</th><th>MODULO</th><th>ESTADO</th><th>CUESTIONARIOS PEND.</th>';
-        resultsTableHtml += '</tr></thead><tbody>';
+        // Filtrar por el código ingresado
+        const filtrados = data.filter(item => item.CODIGO == codigo);
+        const contenedor = document.getElementById('tablaResultados');
 
-        filtrados.forEach(fila => {
-          const claseFila = fila.ESTADO.includes('APROBADO') ? 'fila-aprobado' : 'fila-pendiente';
-          resultsTableHtml += `<tr class="${claseFila}">`;
-          resultsTableHtml += `<td data-label="GRUPO">${fila.GRUPO}</td>`;
-          resultsTableHtml += `<td data-label="CARRERA">${fila.CARRERA}</td>`;
-          resultsTableHtml += `<td data-label="ESTUDIANTES">${fila.ESTUDIANTES}</td>`;
-          resultsTableHtml += `<td data-label="MODULO">${fila.MODULO}</td>`;
-          resultsTableHtml += `<td data-label="ESTADO">${fila.ESTADO}</td>`;
-          resultsTableHtml += `<td data-label="CUESTIONARIOS">${fila.CUESTIONARIOS}</td>`;
-          resultsTableHtml += '</tr>';
-        });
+        if(filtrados.length === 0) {
+          contenedor.innerHTML = `<div class="error-message">No se encontró ningún registro para el código ${codigo}</div>`;
+          return;
+        }
 
-        resultsTableHtml += '</tbody></table>';
+        // Variables adicionales (puedes conectarlas también desde otra hoja si quieres)
+        const resultados = [[filtrados[0].GRUPO, filtrados[0].CARRERA]];
+        const infoCelda = "2025-09-01";
+        const infoCelda2 = "2025-08-27 15:30:00";
+        const infoCelda3 = "contacto@ejemplo.com";
+        const infoCelda4 = "¡Próxima actualización en 24h!";
+        const infoCelda5 = "Este es un mensaje de prueba para los estudiantes.";
 
-        // Combina ambas tablas y las inserta en el contenedor
-        contenedor.innerHTML = infoTableHtml + resultsTableHtml;
-      })
-      .catch(error => {
-        document.getElementById('tablaResultados').innerHTML = `<div class="error-message">Error al cargar los datos</div>`;
-        console.error(error);
-      });
-  </script>
+        // Tabla de información
+        let infoTableHtml = `<table class="header-table">
+          <tr><td colspan="2" class="left-aligned-combined">CTMOR - Módulos Transversales SAB & DOM</td></tr>
+          <tr><td colspan="2" class="left-aligned-combined">✅ Listado de Aprobados de Nuevo Ingreso</td></tr>
+          <tr><td class="header-label">Módulo:</td><td class="header-value group-value">HISTORIA E IDENTIDAD NACIONAL</td></tr>
+          <tr><td class="header-label">Grupo:</td><td class="header-value group-value">${resultados[0][0]}</td></tr>
+          <tr><td class="header-label">Carrera:</td><td class="header-value">${resultados[0][1]}</td></tr>
+          <tr><td class="header-label">Expira:</td><td class="header-value info-cell-red">${infoCelda}</td></tr>
+          <tr><td class="header-label">Actualización:</td><td class="header-value">${infoCelda2}</td></tr>
+          <tr><td class="header-label">Contacto:</td><td class="header-value">${infoCelda3}</td></tr>
+          <tr><td class="header-label">Anuncio:</td><td class="header-value info-cell-yellow">${infoCelda4}</td></tr>
+          <tr><td colspan="2" class="left-aligned-combined">----------------------------------------------</td></tr>
+          <tr><td colspan="2" class="header-value"><i>${infoCelda5}</i></td></tr>
+        </table>`;
+
+        // Tabla de resultados
+        let resultsTableHtml = '<table class="responsive-table"><thead><tr>';
+        resultsTableHtml += '<th>GRUPO</th><th>CARRERA</th><th>ESTUDIANTES</th><th>MODULO</th><th>ESTADO</th><th>CUESTIONARIOS PEND.</th>';
+        resultsTableHtml += '</tr></thead><tbody>';
+
+        filtrados.forEach(fila => {
+          const claseFila = fila.ESTADO.includes('APROBADO') ? 'fila-aprobado' : 'fila-pendiente';
+          resultsTableHtml += `<tr class="${claseFila}">`;
+          resultsTableHtml += `<td data-label="GRUPO">${fila.GRUPO}</td>`;
+          resultsTableHtml += `<td data-label="CARRERA">${fila.CARRERA}</td>`;
+          resultsTableHtml += `<td data-label="ESTUDIANTES">${fila.ESTUDIANTES}</td>`;
+          resultsTableHtml += `<td data-label="MODULO">${fila.MODULO}</td>`;
+          resultsTableHtml += `<td data-label="ESTADO">${fila.ESTADO}</td>`;
+          resultsTableHtml += `<td data-label="CUESTIONARIOS">${fila.CUESTIONARIOS}</td>`;
+          resultsTableHtml += '</tr>';
+        });
+
+        resultsTableHtml += '</tbody></table>';
+
+        // Insertar todo en el contenedor
+        contenedor.innerHTML = infoTableHtml + resultsTableHtml;
+
+      } catch (error) {
+        document.getElementById('tablaResultados').innerHTML = `<div class="error-message">Error al cargar los datos</div>`;
+        console.error(error);
+      }
+    }
+
+    cargarDatos();
+  </script>
 </body>
 </html>
